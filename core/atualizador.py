@@ -12,11 +12,13 @@ class Atualizador():
         self.__relatorio = list()
         self.__produtosCHG = None
 
-    def __startM3(self):
-        self.__M3Interface.start()
+    def startM3(self):
+        status = self.__M3Interface.start()
+        return status
 
-    def __startCHG(self):
-        self.__CHGInterface.start()
+    def startCHG(self):
+        status = self.__CHGInterface.start()
+        return status
 
     def __endM3(self):
         self.__M3Interface.end()
@@ -27,9 +29,9 @@ class Atualizador():
     def startDB(self):
         print('Tentando se conectar com as bases de dados ...')
         sleep(3)
-        self.__startM3()
+        self.startM3()
         sleep(1)
-        self.__startCHG()
+        self.startCHG()
         sleep(1)
 
     def endDB(self):
@@ -47,14 +49,14 @@ class Atualizador():
         return datetime.now().strftime('%d.%m.%Y %H:%M')
 
     def __atualizado(self, cod_m3, custo_antigo, custo_novo):
-        print('[%s ATUALIZADO] => CUSTO ANTIGO: %07.2f - CUSTO NOVO: %07.2f' % (cod_m3, custo_antigo, custo_novo))
+        return '[%s ATUALIZADO] => CUSTO ANTIGO: %07.2f - CUSTO NOVO: %07.2f' % (cod_m3, custo_antigo, custo_novo)
 
     def __naoAtualizado(self, cod_m3, custo_m3, custo_chg):
-        print('[%s NAO ATUALIZADO] => CUSTO DA M3: %07.2f SUPERIOR OU IGUAL AO CUSTO CHG: %07.2f' % (cod_m3, custo_m3, custo_chg))
+        return '[%s NAO ATUALIZADO] => CUSTO DA M3: %07.2f SUPERIOR OU IGUAL AO CUSTO CHG: %07.2f' % (cod_m3, custo_m3, custo_chg)
 
     def __erroAoAtualizar(self, cod_m3):
         self.__relatorio.append('[%s NAO ATUALIZADO] - FALHA AO ATUALIZAR\n' % cod_m3)
-        print('[%s NAO ATUALIZADO] - FALHA AO ATUALIZAR' % cod_m3)
+        return '[%s NAO ATUALIZADO] - FALHA AO ATUALIZAR' % cod_m3
 
     def getRelatorio(self):
         return self.__relatorio
@@ -64,9 +66,10 @@ class Atualizador():
         print('%d PRODUTOS NAO ENCONTRADOS' % n)
         print('%d PRODUTOS COM ERRO AO ATUALIZAR' % e)
 
-    def atualizar(self):
+    def atualizar(self, tkList):
         self.__loadProdutosCHG()
 
+        total = 0
         atualizados = 0
         naoEncontrados = 0
         erroAoAtualizar = 0
@@ -88,17 +91,27 @@ class Atualizador():
                         cod_produto=produto_m3['produto']
                     )
                     if status:
-                        self.__atualizado(produto_m3['produto'], produto_m3['custo'], custo_chg)
+                        text = self.__atualizado(produto_m3['produto'], produto_m3['custo'], custo_chg)
+                        # tkList.insert("end", text)
+                        # tkList.itemconfig(total, foreground='green')
                         atualizados += 1
                     else:
-                        self.__erroAoAtualizar(produto_m3['produto'])
+                        text = self.__erroAoAtualizar(produto_m3['produto'])
+                        # tkList.insert("end", text)
+                        # tkList.itemconfig(total, foreground='red')
                         erroAoAtualizar += 1
                 else:
-                    self.__naoAtualizado(produto_m3['produto'], produto_m3['custo'], custo_chg)
+                    text = self.__naoAtualizado(produto_m3['produto'], produto_m3['custo'], custo_chg)
+                    # tkList.insert("end", text)
+                    # tkList.itemconfig(total, foreground='deep sky blue')
             else:
                 self.__relatorio.append('[CODIGO CHG %s NAO ENCONTRADO NA BASE DE DADOS M3]\n' % codigo_chg)
-                print('[CODIGO CHG %s NAO ENCONTRADO NA BASE DE DADOS M3]' % codigo_chg)
+                text = '[CODIGO CHG %s NAO ENCONTRADO NA BASE DE DADOS M3]' % codigo_chg
+                # tkList.insert("end", text)
+                # tkList.itemconfig(total, foreground='yellow')
                 naoEncontrados += 1
-            
+            print(text)
+            total += 1
+
         self.detalhar(atualizados, erroAoAtualizar, naoEncontrados)
         

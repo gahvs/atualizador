@@ -13,10 +13,11 @@ class CHG(Interface):
         f.loadFile()
         return f.getDBPath(key_search='CHG=')
     
-    def start(self) -> None:
+    def start(self) -> bool:
         super().__init__(database=self.__db_path, databaseAlias='CHG Database')
         status = super().createConnection()
-        if status is False: exit
+        # if status is False: exit
+        return status
     
     def end(self) -> None:
         super().closeConnection()

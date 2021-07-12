@@ -3,7 +3,7 @@ from core.atualizador import Atualizador
 
 obj = Atualizador()
 obj.startDB()
-obj.atualizar()
+obj.atualizar([])
 
 relatorio = obj.getRelatorio()
 

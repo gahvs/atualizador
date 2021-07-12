@@ -20,10 +20,11 @@ class M3(Interface):
         f.loadFile()
         return f.getDBPath(key_search='M3=')
 
-    def start(self) -> None:
+    def start(self) -> bool:
         super().__init__(database=self.__db_path, databaseAlias='M3 Database')
         status = super().createConnection()
-        if status is False: exit
+        # if status is False: exit
+        return status
     
     def end(self) -> None:
         super().closeConnection()

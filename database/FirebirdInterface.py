@@ -15,8 +15,8 @@ class Interface:
 
         if immediateConnection: self.createConnection()
 
-    def __throwMessage(self, type_message, message):
-        print('%s => %s' % (type_message, message))
+    # def __throwMessage(self, type_message, message):
+    #     print('%s => %s' % (type_message, message))
 
     def createConnection(self) -> bool:
         try:
@@ -29,29 +29,29 @@ class Interface:
             )
             self.__cursor = self.__conn.cursor()
         except DatabaseError as error:
-            self.__throwMessage('[%s CONNECTION ERROR]' % self.__databaseAlias, error)
+            # self.__throwMessage('[%s CONNECTION ERROR]' % self.__databaseAlias, error)
             return False
         
-        self.__throwMessage('[SUCCESS]', '%s connected' % self.__databaseAlias)
+        # self.__throwMessage('[SUCCESS]', '%s connected' % self.__databaseAlias)
         return True
 
     def closeConnection(self) -> bool:
         try:
             self.__cursor.close()
             self.__conn.close()
-            self.__throwMessage('[SUCCESS]', '%s disconnected' % self.__databaseAlias)
+            # self.__throwMessage('[SUCCESS]', '%s disconnected' % self.__databaseAlias)
             return True
         except DatabaseError as error:
-            self.__throwMessage('[%s CONNECTION ERROR]' % self.__databaseAlias, error)
+            # self.__throwMessage('[%s CONNECTION ERROR]' % self.__databaseAlias, error)
             return False
 
-    def select(self, query) -> list or False:
+    def select(self, query) -> list:
         try:
             result = self.__cursor.execute(query)
             return [row for row in result]
         except DatabaseError as error:
-            self.__throwMessage('[SQL ERROR]', error)
-            return False
+            # self.__throwMessage('[SQL ERROR]', error)
+            return []
 
     def execute(self, query) -> bool:
         try:    
@@ -59,5 +59,5 @@ class Interface:
             self.__conn.commit()
             return True
         except DatabaseError as error:
-            self.__throwMessage('[SQL ERROR]', error)
+            # self.__throwMessage('[SQL ERROR]', error)
             return False
