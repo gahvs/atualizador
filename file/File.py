@@ -1,4 +1,5 @@
 import os
+from tkinter.constants import TRUE
 
 class File:
 

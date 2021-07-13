@@ -111,7 +111,7 @@ class Atualizador():
                 self.__relatorio.append('[CODIGO CHG %s NAO ENCONTRADO NA BASE DE DADOS M3]\n' % codigo_chg)
                 text = '[CODIGO CHG %s NAO ENCONTRADO NA BASE DE DADOS M3]' % codigo_chg
                 tkList.insert("end", text)
-                tkList.itemconfig(total, foreground='DarkGoldenrod3')
+                tkList.itemconfig(total, foreground='DarkGoldenrod4')
                 naoEncontrados += 1
             
             root.update_idletasks()
