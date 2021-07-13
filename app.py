@@ -72,11 +72,11 @@ class Application:
         })
         self.scrollBar.config(command=productsList.yview)
 
-        self.core.atualizar(tkList=productsList)
+        self.core.atualizar(tkList=productsList, root=root)
         
 root = Tk(className="Atualizador CHG")
 root.resizable(False, False)
-root.geometry("500x500")
+root.geometry("700x500")
 root.configure(bg='white')
 Application(root)
 root.mainloop()

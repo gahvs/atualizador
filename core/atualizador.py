@@ -2,6 +2,7 @@ from datetime import datetime
 from systems.CHG import CHG
 from systems.M3 import M3
 from time import sleep
+from tkinter import END
 
 class Atualizador():
 
@@ -66,7 +67,7 @@ class Atualizador():
         print('%d PRODUTOS NAO ENCONTRADOS' % n)
         print('%d PRODUTOS COM ERRO AO ATUALIZAR' % e)
 
-    def atualizar(self, tkList):
+    def atualizar(self, tkList, root):
         self.__loadProdutosCHG()
 
         total = 0
@@ -80,6 +81,8 @@ class Atualizador():
 
             produto_m3 = self.__M3Interface.getProduto(cod_fabricante=codigo_chg)
 
+            tkList.see(END)
+
             if produto_m3 is not None:
 
                 if custo_chg > produto_m3['custo']:
@@ -92,26 +95,30 @@ class Atualizador():
                     )
                     if status:
                         text = self.__atualizado(produto_m3['produto'], produto_m3['custo'], custo_chg)
-                        # tkList.insert("end", text)
-                        # tkList.itemconfig(total, foreground='green')
+                        tkList.insert("end", text)
+                        tkList.itemconfig(total, foreground='SpringGreen4')
                         atualizados += 1
                     else:
                         text = self.__erroAoAtualizar(produto_m3['produto'])
-                        # tkList.insert("end", text)
-                        # tkList.itemconfig(total, foreground='red')
+                        tkList.insert("end", text)
+                        tkList.itemconfig(total, foreground='red3')
                         erroAoAtualizar += 1
                 else:
                     text = self.__naoAtualizado(produto_m3['produto'], produto_m3['custo'], custo_chg)
-                    # tkList.insert("end", text)
-                    # tkList.itemconfig(total, foreground='deep sky blue')
+                    tkList.insert("end", text)
+                    tkList.itemconfig(total, foreground='blue2')
             else:
                 self.__relatorio.append('[CODIGO CHG %s NAO ENCONTRADO NA BASE DE DADOS M3]\n' % codigo_chg)
                 text = '[CODIGO CHG %s NAO ENCONTRADO NA BASE DE DADOS M3]' % codigo_chg
-                # tkList.insert("end", text)
-                # tkList.itemconfig(total, foreground='yellow')
+                tkList.insert("end", text)
+                tkList.itemconfig(total, foreground='DarkGoldenrod3')
                 naoEncontrados += 1
-            print(text)
-            total += 1
+            
+            root.update_idletasks()
 
+            if total > 15:
+                tkList.delete(0)
+            else: 
+                total += 1
+                
         self.detalhar(atualizados, erroAoAtualizar, naoEncontrados)
-        
